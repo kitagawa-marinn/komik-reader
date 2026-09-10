@@ -4,8 +4,492 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Komik Reader - Baca Komik Online</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@extension/ui@1.0.0/dist/extension-ui.min.css">
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #6366f1;
+            --secondary-color: #8b5cf6;
+            --accent-color: #ec4899;
+            --light-bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.15);
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow);
+        }
+
+        .navbar-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            position: relative;
+            cursor: pointer;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: white;
+            transition: var(--transition);
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .search-btn {
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            padding: 5rem 2rem;
+            text-align: center;
+            color: white;
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hero-content h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            animation: slideDown 0.6s ease;
+        }
+
+        .hero-content p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            animation: slideUp 0.6s ease;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            color: var(--text-primary);
+            position: relative;
+            padding-bottom: 1rem;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            border-radius: 2px;
+        }
+
+        .comics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .comic-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .comic-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .comic-card-image {
+            width: 100%;
+            height: 250px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.1rem;
+            text-align: center;
+            padding: 1rem;
+        }
+
+        .comic-card-content {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .comic-card-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .comic-card-author {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .comic-card-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: auto;
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .category-card {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            padding: 2rem 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            color: white;
+            box-shadow: var(--shadow);
+        }
+
+        .category-card:hover {
+            transform: scale(1.05);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .category-icon {
+            font-size: 2.5rem;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .btn-small {
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        .search-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            animation: fadeIn 0.3s;
+        }
+
+        .search-modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .search-modal-content {
+            background-color: var(--card-bg);
+            padding: 2rem;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .search-modal-content h2 {
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 10px rgba(99, 102, 241, 0.2);
+        }
+
+        .search-results {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .search-result-item {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .search-result-item:hover {
+            background-color: var(--light-bg);
+            padding-left: 1.5rem;
+        }
+
+        .close {
+            color: var(--text-secondary);
+            float: right;
+            font-size: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .read-modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            overflow-y: auto;
+        }
+
+        .read-modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .read-modal-content {
+            background-color: var(--card-bg);
+            padding: 2rem;
+            border-radius: 12px;
+            width: 95%;
+            max-width: 900px;
+            box-shadow: var(--shadow-lg);
+            margin: 2rem auto;
+        }
+
+        .reader-header {
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 1rem;
+        }
+
+        .reader-header h2 {
+            margin-bottom: 0.5rem;
+        }
+
+        .reader-header p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .reader-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .reader-image {
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .reader-image img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+        }
+
+        .footer {
+            background: linear-gradient(135deg, #0f172a, #1a1a2e);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar-container {
+                padding: 0 1rem;
+            }
+            .nav-menu {
+                gap: 1rem;
+            }
+            .hero-content h1 {
+                font-size: 2rem;
+            }
+            .hero-content p {
+                font-size: 1rem;
+            }
+            .comics-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 1rem;
+            }
+            .categories-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-content h1 {
+                font-size: 1.5rem;
+            }
+            .comics-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.8rem;
+            }
+            .categories-grid {
+                grid-template-columns: 1fr;
+            }
+            .container {
+                padding: 1rem;
+            }
+            .reader-controls {
+                flex-direction: column;
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- Header/Navbar -->
@@ -19,7 +503,7 @@
                 <li><a href="#home" class="nav-link">Beranda</a></li>
                 <li><a href="#popular" class="nav-link">Populer</a></li>
                 <li><a href="#categories" class="nav-link">Kategori</a></li>
-                <li><a href="#" class="nav-link search-btn">🔍</a></li>
+                <li><a class="nav-link search-btn" onclick="openSearchModal(); return false;">🔍</a></li>
             </ul>
         </div>
     </nav>
@@ -27,7 +511,7 @@
     <!-- Search Modal -->
     <div id="searchModal" class="search-modal">
         <div class="search-modal-content">
-            <span class="close">&times;</span>
+            <span class="close" onclick="closeSearchModal()">&times;</span>
             <h2>Cari Komik</h2>
             <input type="text" id="searchInput" placeholder="Masukkan judul komik..." class="search-input">
             <div id="searchResults" class="search-results"></div>
@@ -48,17 +532,13 @@
         <!-- Featured Section -->
         <section class="featured-section">
             <h2 class="section-title">Komik Terbaru</h2>
-            <div id="featuredComics" class="comics-grid">
-                <!-- Akan diisi oleh JavaScript -->
-            </div>
+            <div id="featuredComics" class="comics-grid"></div>
         </section>
 
         <!-- Popular Section -->
         <section id="popular" class="popular-section">
             <h2 class="section-title">Komik Populer</h2>
-            <div id="popularComics" class="comics-grid">
-                <!-- Akan diisi oleh JavaScript -->
-            </div>
+            <div id="popularComics" class="comics-grid"></div>
         </section>
 
         <!-- Categories Section -->
@@ -91,37 +571,28 @@
                 </div>
             </div>
         </section>
-
-        <!-- Category Results -->
-        <section id="categoryResults" class="category-results" style="display: none;">
-            <h2 class="section-title" id="categoryTitle"></h2>
-            <div id="categoryComics" class="comics-grid"></div>
-            <button class="btn btn-secondary" onclick="backToMain()">← Kembali</button>
-        </section>
     </main>
 
     <!-- Modal untuk membaca komik -->
     <div id="readModal" class="read-modal">
         <div class="read-modal-content">
             <span class="close" onclick="closeReadModal()">&times;</span>
-            <div class="reader-container">
-                <div class="reader-header">
-                    <h2 id="readTitle"></h2>
-                    <p id="readChapter"></p>
-                </div>
-                <div class="reader-controls">
-                    <button class="btn btn-small" onclick="previousPage()">← Sebelumnya</button>
-                    <span id="pageInfo"></span>
-                    <button class="btn btn-small" onclick="nextPage()">Berikutnya →</button>
-                </div>
-                <div class="reader-image">
-                    <img id="pageImage" src="" alt="Halaman Komik">
-                </div>
-                <div class="reader-controls">
-                    <button class="btn btn-small" onclick="previousPage()">← Sebelumnya</button>
-                    <span id="pageInfo2"></span>
-                    <button class="btn btn-small" onclick="nextPage()">Berikutnya →</button>
-                </div>
+            <div class="reader-header">
+                <h2 id="readTitle"></h2>
+                <p id="readChapter"></p>
+            </div>
+            <div class="reader-controls">
+                <button class="btn btn-primary btn-small" onclick="previousPage()">← Sebelumnya</button>
+                <span id="pageInfo" style="font-weight: 600;"></span>
+                <button class="btn btn-primary btn-small" onclick="nextPage()">Berikutnya →</button>
+            </div>
+            <div class="reader-image">
+                <img id="pageImage" src="" alt="Halaman Komik">
+            </div>
+            <div class="reader-controls">
+                <button class="btn btn-primary btn-small" onclick="previousPage()">← Sebelumnya</button>
+                <span id="pageInfo2" style="font-weight: 600;"></span>
+                <button class="btn btn-primary btn-small" onclick="nextPage()">Berikutnya →</button>
             </div>
         </div>
     </div>
@@ -130,15 +601,166 @@
     <footer class="footer">
         <div class="footer-content">
             <p>&copy; 2024 Komik Reader. Semua hak cipta dilindungi.</p>
-            <div class="social-links">
-                <a href="#">Twitter</a>
-                <a href="#">Facebook</a>
-                <a href="#">Instagram</a>
-            </div>
+            <p style="font-size: 0.9rem; margin-top: 1rem; opacity: 0.8;">Dibuat dengan ❤️ menggunakan HTML, CSS & JavaScript</p>
         </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/@extension/ui@1.0.0/dist/extension-ui.min.js"></script>
-    <script src="app.js"></script>
+    <script>
+        const komikData = [
+            {id: 1, title: "One Piece", author: "Eiichiro Oda", category: "action", rating: 4.9, chapters: 1050, pages: 50},
+            {id: 2, title: "My Hero Academia", author: "Kohei Horikoshi", category: "action", rating: 4.8, chapters: 400, pages: 45},
+            {id: 3, title: "Your Name", author: "Makoto Shinkai", category: "romance", rating: 4.7, chapters: 150, pages: 35},
+            {id: 4, title: "Attack on Titan", author: "Hajime Isayama", category: "action", rating: 4.9, chapters: 139, pages: 40},
+            {id: 5, title: "Love is War", author: "Aka Akasaka", category: "romance", rating: 4.6, chapters: 300, pages: 30},
+            {id: 6, title: "Jujutsu Kaisen", author: "Gege Akutami", category: "action", rating: 4.8, chapters: 250, pages: 42},
+            {id: 7, title: "Kaguya-sama: Love is War", author: "Aka Akasaka", category: "comedy", rating: 4.7, chapters: 280, pages: 32},
+            {id: 8, title: "That Time I Got Reincarnated", author: "Fuse", category: "fantasy", rating: 4.5, chapters: 200, pages: 38},
+            {id: 9, title: "Tokyo Ghoul", author: "Sui Ishida", category: "horror", rating: 4.6, chapters: 179, pages: 44},
+            {id: 10, title: "Spy x Family", author: "Tatsuya Endo", category: "slice-of-life", rating: 4.8, chapters: 160, pages: 36},
+            {id: 11, title: "Demon Slayer", author: "Koyoharu Gotouge", category: "action", rating: 4.9, chapters: 207, pages: 48},
+            {id: 12, title: "A Certain Magical Index", author: "Kazuma Kamachi", category: "fantasy", rating: 4.5, chapters: 350, pages: 41}
+        ];
+
+        let currentComic = null;
+        let currentPage = 1;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadFeaturedComics();
+            loadPopularComics();
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            document.getElementById('searchInput').addEventListener('input', (e) => {
+                const query = e.target.value.toLowerCase();
+                if (query.length > 0) {
+                    const results = komikData.filter(k => k.title.toLowerCase().includes(query));
+                    displaySearchResults(results);
+                } else {
+                    document.getElementById('searchResults').innerHTML = '';
+                }
+            });
+
+            document.querySelectorAll('.category-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    alert('Kategori: ' + card.dataset.category);
+                });
+            });
+
+            window.addEventListener('click', (e) => {
+                const searchModal = document.getElementById('searchModal');
+                if (e.target === searchModal) closeSearchModal();
+            });
+        }
+
+        function loadFeaturedComics() {
+            const featured = komikData.slice(0, 6);
+            document.getElementById('featuredComics').innerHTML = featured.map(createComicCard).join('');
+        }
+
+        function loadPopularComics() {
+            const popular = [...komikData].sort((a, b) => b.rating - a.rating).slice(0, 8);
+            document.getElementById('popularComics').innerHTML = popular.map(createComicCard).join('');
+        }
+
+        function createComicCard(comic) {
+            return `
+                <div class="comic-card" onclick="openReadModal(${comic.id})">
+                    <div class="comic-card-image">${comic.title}</div>
+                    <div class="comic-card-content">
+                        <h3 class="comic-card-title">${comic.title}</h3>
+                        <p class="comic-card-author">Oleh: ${comic.author}</p>
+                        <div class="comic-card-meta">
+                            <span>⭐ ${comic.rating}</span>
+                            <span>${comic.chapters} Ch</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function openSearchModal() {
+            document.getElementById('searchModal').classList.add('active');
+            document.getElementById('searchInput').focus();
+        }
+
+        function closeSearchModal() {
+            document.getElementById('searchModal').classList.remove('active');
+            document.getElementById('searchResults').innerHTML = '';
+        }
+
+        function displaySearchResults(results) {
+            const resultsContainer = document.getElementById('searchResults');
+            if (results.length === 0) {
+                resultsContainer.innerHTML = '<p style="padding: 1rem; text-align: center; color: #64748b;">Tidak ada hasil ditemukan</p>';
+                return;
+            }
+            resultsContainer.innerHTML = results.map(comic => `
+                <div class="search-result-item" onclick="handleSearchResult(${comic.id})">
+                    <strong>${comic.title}</strong>
+                    <p style="font-size: 0.9rem; color: #64748b; margin-top: 0.3rem;">${comic.author} • ${comic.chapters} Chapters</p>
+                </div>
+            `).join('');
+        }
+
+        function handleSearchResult(id) {
+            closeSearchModal();
+            openReadModal(id);
+        }
+
+        function openReadModal(id) {
+            currentComic = komikData.find(k => k.id === id);
+            if (!currentComic) return;
+            currentPage = 1;
+            document.getElementById('readModal').classList.add('active');
+            updateReaderContent();
+        }
+
+        function closeReadModal() {
+            document.getElementById('readModal').classList.remove('active');
+            currentComic = null;
+            currentPage = 1;
+        }
+
+        function updateReaderContent() {
+            if (!currentComic) return;
+            document.getElementById('readTitle').textContent = currentComic.title;
+            document.getElementById('readChapter').textContent = `Chapter ${Math.ceil(currentPage / 5)}`;
+            document.getElementById('pageImage').src = `https://via.placeholder.com/800x600?text=Halaman+${currentPage}`;
+            const pageInfo = `Halaman ${currentPage} / ${currentComic.pages}`;
+            document.getElementById('pageInfo').textContent = pageInfo;
+            document.getElementById('pageInfo2').textContent = pageInfo;
+        }
+
+        function nextPage() {
+            if (currentComic && currentPage < currentComic.pages) {
+                currentPage++;
+                updateReaderContent();
+            } else {
+                alert('Anda sudah di halaman terakhir!');
+            }
+        }
+
+        function previousPage() {
+            if (currentComic && currentPage > 1) {
+                currentPage--;
+                updateReaderContent();
+            } else {
+                alert('Anda sudah di halaman pertama!');
+            }
+        }
+
+        function scrollToPopular() {
+            document.getElementById('popular').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('readModal').classList.contains('active')) {
+                if (e.key === 'ArrowRight') nextPage();
+                if (e.key === 'ArrowLeft') previousPage();
+                if (e.key === 'Escape') closeReadModal();
+            }
+        });
+    </script>
 </body>
 </html>
