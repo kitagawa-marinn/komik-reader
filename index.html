@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Komik Reader - Baca Komik Online</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@extension/ui@1.0.0/dist/extension-ui.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header/Navbar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="logo">
+                <span class="logo-icon">📚</span>
+                <span class="logo-text">Komik Reader</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#home" class="nav-link">Beranda</a></li>
+                <li><a href="#popular" class="nav-link">Populer</a></li>
+                <li><a href="#categories" class="nav-link">Kategori</a></li>
+                <li><a href="#" class="nav-link search-btn">🔍</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Search Modal -->
+    <div id="searchModal" class="search-modal">
+        <div class="search-modal-content">
+            <span class="close">&times;</span>
+            <h2>Cari Komik</h2>
+            <input type="text" id="searchInput" placeholder="Masukkan judul komik..." class="search-input">
+            <div id="searchResults" class="search-results"></div>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Selamat Datang di Komik Reader</h1>
+            <p>Baca ribuan komik favorit Anda secara gratis</p>
+            <button class="btn btn-primary" onclick="scrollToPopular()">Mulai Baca</button>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Featured Section -->
+        <section class="featured-section">
+            <h2 class="section-title">Komik Terbaru</h2>
+            <div id="featuredComics" class="comics-grid">
+                <!-- Akan diisi oleh JavaScript -->
+            </div>
+        </section>
+
+        <!-- Popular Section -->
+        <section id="popular" class="popular-section">
+            <h2 class="section-title">Komik Populer</h2>
+            <div id="popularComics" class="comics-grid">
+                <!-- Akan diisi oleh JavaScript -->
+            </div>
+        </section>
+
+        <!-- Categories Section -->
+        <section id="categories" class="categories-section">
+            <h2 class="section-title">Kategori</h2>
+            <div class="categories-grid">
+                <div class="category-card" data-category="action">
+                    <span class="category-icon">⚔️</span>
+                    <span class="category-name">Action</span>
+                </div>
+                <div class="category-card" data-category="romance">
+                    <span class="category-icon">💕</span>
+                    <span class="category-name">Romance</span>
+                </div>
+                <div class="category-card" data-category="comedy">
+                    <span class="category-icon">😂</span>
+                    <span class="category-name">Comedy</span>
+                </div>
+                <div class="category-card" data-category="fantasy">
+                    <span class="category-icon">🐉</span>
+                    <span class="category-name">Fantasy</span>
+                </div>
+                <div class="category-card" data-category="horror">
+                    <span class="category-icon">👻</span>
+                    <span class="category-name">Horror</span>
+                </div>
+                <div class="category-card" data-category="slice-of-life">
+                    <span class="category-icon">🌸</span>
+                    <span class="category-name">Slice of Life</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Category Results -->
+        <section id="categoryResults" class="category-results" style="display: none;">
+            <h2 class="section-title" id="categoryTitle"></h2>
+            <div id="categoryComics" class="comics-grid"></div>
+            <button class="btn btn-secondary" onclick="backToMain()">← Kembali</button>
+        </section>
+    </main>
+
+    <!-- Modal untuk membaca komik -->
+    <div id="readModal" class="read-modal">
+        <div class="read-modal-content">
+            <span class="close" onclick="closeReadModal()">&times;</span>
+            <div class="reader-container">
+                <div class="reader-header">
+                    <h2 id="readTitle"></h2>
+                    <p id="readChapter"></p>
+                </div>
+                <div class="reader-controls">
+                    <button class="btn btn-small" onclick="previousPage()">← Sebelumnya</button>
+                    <span id="pageInfo"></span>
+                    <button class="btn btn-small" onclick="nextPage()">Berikutnya →</button>
+                </div>
+                <div class="reader-image">
+                    <img id="pageImage" src="" alt="Halaman Komik">
+                </div>
+                <div class="reader-controls">
+                    <button class="btn btn-small" onclick="previousPage()">← Sebelumnya</button>
+                    <span id="pageInfo2"></span>
+                    <button class="btn btn-small" onclick="nextPage()">Berikutnya →</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2024 Komik Reader. Semua hak cipta dilindungi.</p>
+            <div class="social-links">
+                <a href="#">Twitter</a>
+                <a href="#">Facebook</a>
+                <a href="#">Instagram</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@extension/ui@1.0.0/dist/extension-ui.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
